@@ -1,27 +1,40 @@
 
 version: '2'
 volumes:
+<<<<<<< HEAD
     grafana_data: {}
     prometheus_data: {}
     influxdb_data: {}
 
+=======
+    grafana_data_2: {}
+>>>>>>> c617758da5ad5103ab290dad771a3ba7443c9ab4
 services:
 # -------------------------------------------------------------------------
 # Grafana - Graphical Interface
 # -------------------------------------------------------------------------
   grafana:
+<<<<<<< HEAD
     image: grafana/grafana:6.7.6
     volumes:
       - /etc/localtime:/etc/localtime
       - grafana_data:/var/lib/grafana
       - ./config/grafana.ini:/etc/grafana/grafana.ini
     restart: unless-stopped
+=======
+    image: grafana/grafana:5.4.3
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - grafana_data_2:/var/lib/grafana
+      - ./config/grafana.ini:/etc/grafana/grafana.ini
+>>>>>>> c617758da5ad5103ab290dad771a3ba7443c9ab4
     depends_on:
       - prometheus
     ports:
       - "3000:3000"
 
 # -------------------------------------------------------------------------
+<<<<<<< HEAD
 # Prometheus
 # -------------------------------------------------------------------------
   prometheus:
@@ -72,30 +85,78 @@ services:
 
 # -------------------------------------------------------------------------
 # Telegraf - Prometheus (Alerts and Perfmon)
+=======
+# Prometheus -
+# -------------------------------------------------------------------------
+  prometheus:
+    image: prom/prometheus:v2.4.3
+    volumes:
+        - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+        - ./config/alert.rules:/etc/prometheus/alert.rules
+        - /etc/localtime:/etc/localtime
+    command:
+        - '--config.file=/etc/prometheus/prometheus.yml'
+        - '--storage.tsdb.retention=3d'
+    ports:
+        - '9090:9090'
+
+# -------------------------------------------------------------------------
+# influxdb
+# -------------------------------------------------------------------------
+  influxdb:
+    image: influxdb:1.8.2-alpine
+    volumes:
+     - /etc/localtime:/etc/localtime
+     - ./influxdb/scripts/:/docker-entrypoint-initdb.d/
+    environment:
+     INFLUXDB_MONITOR_STORE_ENABLED: 'false'
+    ports:
+     - "8086:8086"
+
+# -------------------------------------------------------------------------
+# Telegraf - Prom
+>>>>>>> c617758da5ad5103ab290dad771a3ba7443c9ab4
 # -------------------------------------------------------------------------
   telegraf-prom:
     image: apstra/telegraf:latest
     command: telegraf -debug
+<<<<<<< HEAD
     restart: unless-stopped
+=======
+>>>>>>> c617758da5ad5103ab290dad771a3ba7443c9ab4
     env_file:
       - variables.env
     volumes:
       - ./config/telegraf-prom.toml:/etc/telegraf/telegraf.conf
       - /etc/localtime:/etc/localtime
     ports:
+<<<<<<< HEAD
       - '6666:6666'
 
 # -------------------------------------------------------------------------
 # Telegraf - Influx (Events)
+=======
+        - '6666:6666'
+
+# -------------------------------------------------------------------------
+# Telegraf - Influx
+>>>>>>> c617758da5ad5103ab290dad771a3ba7443c9ab4
 # -------------------------------------------------------------------------
   telegraf-influx:
     image: apstra/telegraf:latest
     command: telegraf -debug
+<<<<<<< HEAD
     restart: unless-stopped
+=======
+>>>>>>> c617758da5ad5103ab290dad771a3ba7443c9ab4
     env_file:
       - variables.env
     volumes:
       - ./config/telegraf-influx.toml:/etc/telegraf/telegraf.conf
       - /etc/localtime:/etc/localtime
     ports:
+<<<<<<< HEAD
       - '4444:4444'
+=======
+        - '4444:4444'
+>>>>>>> c617758da5ad5103ab290dad771a3ba7443c9ab4
