@@ -1,0 +1,13 @@
+
+
+title: "Leaf"
+template: prom-singlestat.j2
+datasource: prometheus
+span: 1
+
+targets:
+  A:
+    expr: count(count by(device)(interface_counters_tx_bps{role="leaf"}))
+
+templatings_used: []
+#   - device.yaml

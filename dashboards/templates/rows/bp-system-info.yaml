@@ -1,0 +1,8 @@
+
+title: System info
+height: 250px
+template: row_base_open.j2
+panels:
+  graphs:
+    - bp-system-cpu.yaml
+    - bp-system-memory.yaml
