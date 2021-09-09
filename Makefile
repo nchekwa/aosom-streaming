@@ -1,5 +1,4 @@
-
-VAR_FILE=variables.env
+VAR_FILE=.env
 include $(VAR_FILE)
 
 .SILENT:
@@ -36,7 +35,7 @@ init: grafana-create-source-proxy grafana-load-dashboards
 ## Create datasource in proxy mode in Grafana
 grafana-create-source-proxy:
 	@echo "-- Create Datasource in Grafana 1/2"
-	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"influxdb","type":"influxdb","url":"http://influxdb:8086","access":"proxy","isDefault":false,"database":"aos"}'
+	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"influxdb","type":"influxdb","url":"http://influxdb:8086","access":"proxy","isDefault":false,"database":"${INFLUXDB_BUCKET}","user":"$(INFLUXDB_USERNAME)","password":"$(INFLUXDB_PASSWORD)", "jsonData":{"defaultBucket":"${INFLUXDB_BUCKET}","httpMode":"POST","organization":"${INFLUXDB_ORG}","version":"Flux"},"secureJsonData":{"token": "${INFLUXDB_ADMIN_TOKEN}"},"version":2}'
 	@echo "\n-- Create Datasource in Grafana 2/2"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"prometheus","type":"prometheus","url":"http://prometheus:9090","access":"proxy","isDefault":true}'
 
@@ -45,17 +44,19 @@ grafana-create-source-direct:
 	@echo "-- Cleanup Datasources in Grafana"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources/1' -X DELETE -H 'Content-Type: application/json' -H 'Accept: application/json'
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources/2' -X DELETE -H 'Content-Type: application/json' -H 'Accept: application/json'
-	@echo "\n-- Create Datasource in Grafana 1/2"
-	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"influxdb","type":"influxdb","url":"http://$(LOCAL_IP):8086","access":"direct","isDefault":false,"database":"aos"}'
-	@echo "\n-- Create Datasource in Grafana 2/2"
+	@echo "\n-- Create Datasource in Grafana 1/2 [influxdb]"
+	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"influxdb","type":"influxdb","url":"http://$(LOCAL_IP):8086","access":"direct","isDefault":false,"database":"aos","user":"$(INFLUXDB_USERNAME)","password":"$(INFLUXDB_PASSWORD)", "jsonData":{"defaultBucket":"${INFLUXDB_BUCKET}","httpMode":"POST","organization":"${INFLUXDB_ORG}","version":"Flux"},"secureJsonData":{"token": "${INFLUXDB_ADMIN_TOKEN}"},"version":2}'
+	@echo "\n-- Create Datasource in Grafana 2/2 [prometheus]"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"prometheus","type":"prometheus","url":"http://$(LOCAL_IP):9090","access":"direct","isDefault":true}'
 
 ## Load/Reload the Dashboards in Grafana
 grafana-load-dashboards:
-	@echo "-- Load Dashboard in Grafana 1/2"
-	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/dashboards/db' -X POST -H "Content-Type: application/json" --data-binary @dashboards/apstra_aos_blueprint.json
-	@echo "\n-- Load Dashboard in Grafana 2/2"
-	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/dashboards/db' -X POST -H "Content-Type: application/json" --data-binary @dashboards/apstra_aos_device.json
+	@echo "-- Load Dashboard in Grafana 1/3"
+	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/dashboards/db' -X POST -H "Content-Type: application/json" --data-binary @config/grafana/dashboards/apstra_aos_blueprint.json
+	@echo "\n-- Load Dashboard in Grafana 2/3"
+	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/dashboards/db' -X POST -H "Content-Type: application/json" --data-binary @config/grafana/dashboards/apstra_aos_device.json
+	@echo "\n-- Load Dashboard in Grafana 3/3"
+	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/dashboards/db' -X POST -H "Content-Type: application/json" --data-binary @config/grafana/dashboards/apstra_aos_interface.json
 
 ## Stop all components, Update all images, Restart all components, Reload the Dashboards (stop update-docker start grafana-load-dashboards)
 update: stop update-docker start grafana-load-dashboards
@@ -66,15 +67,28 @@ update-docker:
 	@docker-compose pull --ignore-pull-failures
 
 ## Delete Grafana information and delete current streaming session on AOS (clean-docker clean-aos)
-clean: clean-docker # clean-aos
+clean: clean-docker clean-aos
 
-## Delete Grafana information
-clean-docker:
-	@echo "-- Delete all Data in Grafana (Grafana must be stopped) --"
-	docker volume rm -f aosomstreaming_grafana_data_2
-#
-# ## Delete current streaming session on AOS
-# clean-aos:
-# 	@export $(shell cat variables.env | xargs)
-# 	@echo "Delete all streaming session on the server (AOS server must be reacheable)"
-# 	ansible-playbook -i tools/hosts.ini tools/pb.streaming_delete.yaml
+## Delete Docker Volume information (grafana_data, prometheus_data, influxdb2_data/_config)
+clean-docker-volume:
+	@echo "-- Delete all Volume Data"
+	@echo "-- Grafana (Grafana must be stopped) --"
+	docker volume rm -f aosom-streaming_grafana_data
+	@echo "-- Prometheus (Prometheus must be stopped) --"
+	docker volume rm -f aosom-streaming_prometheus_data
+	@echo "-- InfluxDB (InfluxDB must be stopped) --"
+	docker volume rm -f aosom-streaming_influxdb2_data
+	docker volume rm -f aosom-streaming_influxdb2_config
+
+## Delete Apstra streaming receivers 
+AOS_TOKEN := $(shell  curl --silent -k -X POST "https://${AOS_SERVER}/api/user/login" -H  "accept: application/json" -H  "content-type: application/json, Cache-Control:no-cache" -d "{ \"username\":\"${AOS_LOGIN}\", \"password\":\"${AOS_PASSWORD}\" }" | jq --raw-output '.token') 
+AOS_STREAM_RECEIVER = $(shell  curl --silent -k -X GET "https://${AOS_SERVER}/api/streaming-config"   -H  "accept: application/json"   -H "AuthToken: ${AOS_TOKEN}"  | jq -r -c '.items[] | select(.hostname == "${LOCAL_IP}") | .id' |  tr '\n', " ") 
+clean-aos:
+	@yum install -y -q -e 0 epel-release > /dev/null 2>&1
+	@yum install -y -q -e 0 jq > /dev/null 2>&1
+	@echo "Delete all streaming receivers on the server (AOS server must be reacheable)"
+	for receiver_id in $(AOS_STREAM_RECEIVER); do \
+        echo "-- Delete Apstra Steam Receiver ID: $$receiver_id "; \
+		curl -k -X DELETE "https://${AOS_SERVER}/api/streaming-config/$$receiver_id"   -H  "accept: application/json"   -H "AuthToken: ${AOS_TOKEN}"; \
+		echo "--- Done"; \
+    done

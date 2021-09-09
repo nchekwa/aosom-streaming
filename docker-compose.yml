@@ -3,18 +3,22 @@ version: '2'
 volumes:
     grafana_data: {}
     prometheus_data: {}
-    influxdb_data: {}
+    influxdb2_data: {}
+    influxdb2_config: {}
 
 services:
 # -------------------------------------------------------------------------
 # Grafana - Graphical Interface
 # -------------------------------------------------------------------------
   grafana:
-    image: grafana/grafana:6.7.6
+    image: grafana/grafana:latest
     volumes:
       - /etc/localtime:/etc/localtime
       - grafana_data:/var/lib/grafana
-      - ./config/grafana.ini:/etc/grafana/grafana.ini
+      - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini
+    environment: 
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_LOGIN}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
     restart: unless-stopped
     depends_on:
       - prometheus
@@ -27,8 +31,8 @@ services:
   prometheus:
     image: prom/prometheus:latest
     volumes:
-      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./config/alert.rules:/etc/prometheus/alert.rules
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./config/prometheus/alert.rules:/etc/prometheus/alert.rules
       - /etc/localtime:/etc/localtime
       - prometheus_data:/prometheus
     command:
@@ -43,32 +47,31 @@ services:
 # Influxdb + Chronograf
 # -------------------------------------------------------------------------
   influxdb:
-    image: influxdb:1.8.9
+    image: influxdb:latest
     volumes:
       - /etc/localtime:/etc/localtime
-      - ./influxdb/scripts/:/docker-entrypoint-initdb.d/
-      - influxdb_data:/var/lib/influxdb
-    environment:
-      - INFLUXDB_MONITOR_STORE_ENABLED=0
-      #- INFLUXDB_ADMIN_USER=${INFLUXDB_USERNAME}
-      #- INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD}
+      - ./config/influxdb/initdb/:/docker-entrypoint-initdb.d/
+      - influxdb2_data:/var/lib/influxdb2
+      - influxdb2_config:/etc/influxdb2
+      ## for upgrade from v1
+      # - influxdb_data:/var/lib/influxdb
+      # - influxdb_config:/etc/influxdb
+    environment: 
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USERNAME}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
+      - DOCKER_INFLUXDB_INIT_RETENTION=${INFLUXDB_RETENTION}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
+      # for upgrade from v1
+      # - DOCKER_INFLUXDB_INIT_MODE=upgrade
+      # - DOCKER_INFLUXDB_INIT_UPGRADE_V1_CONFIG
+      # - DOCKER_INFLUXDB_INIT_UPGRADE_V1_DIR
+    entrypoint: ["./entrypoint.sh"]
     restart: unless-stopped
     ports:
       - "8086:8086"
-
-  chronograf:
-    image: chronograf:latest
-    volumes:
-      - /var/lib/chronograf:/var/lib/chronograf
-    restart: unless-stopped
-    depends_on:
-      - influxdb
-    environment:
-      - INFLUXDB_URL=http://influxdb:8086
-      #- INFLUXDB_USERNAME=${INFLUXDB_USERNAME}
-      #- INFLUXDB_PASSWORD=${INFLUXDB_PASSWORD}
-    ports:
-      - '8888:8888'
 
 # -------------------------------------------------------------------------
 # Telegraf - Prometheus (Alerts and Perfmon)
@@ -78,12 +81,14 @@ services:
     command: telegraf -debug
     restart: unless-stopped
     env_file:
-      - variables.env
+      - .env
     volumes:
-      - ./config/telegraf-prom.toml:/etc/telegraf/telegraf.conf
+      - ./config/telegraf/telegraf-prom.toml:/etc/telegraf/telegraf.conf
       - /etc/localtime:/etc/localtime
     ports:
       - '6666:6666'
+    depends_on:
+      - prometheus
 
 # -------------------------------------------------------------------------
 # Telegraf - Influx (Events)
@@ -93,9 +98,38 @@ services:
     command: telegraf -debug
     restart: unless-stopped
     env_file:
-      - variables.env
+      - .env
     volumes:
-      - ./config/telegraf-influx.toml:/etc/telegraf/telegraf.conf
+      - ./config/telegraf/telegraf-influx.toml:/etc/telegraf/telegraf.conf
       - /etc/localtime:/etc/localtime
+    environment: 
+      - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
     ports:
       - '4444:4444'
+    depends_on:
+      - influxdb
+    
+# -------------------------------------------------------------------------
+# Telegraf - Syslog
+# -------------------------------------------------------------------------
+  telegraf-syslog:
+    image: apstra/telegraf:latest
+    command: telegraf -debug
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./config/telegraf/telegraf-syslog-entrypoint.sh:/entrypoint.sh:rw
+      - ./config/telegraf/telegraf-syslog.toml:/etc/telegraf/telegraf.conf
+      - /etc/localtime:/etc/localtime
+    environment: 
+      - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
+    ports:
+      - '6514:6514'
+      - '6514:6514/udp'
+    depends_on:
+      - influxdb
