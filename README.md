@@ -1,3 +1,4 @@
+
 # AOSOM-Streaming
 Apstra OS Outbound Monitoring - Streaming<br>
 Version v0.8<br>
@@ -6,7 +7,6 @@ Version v0.8<br>
 
 ## Disclaimer
 **WARNING:** This application is for demo purposes only and should not be used in production.
-
 
 # Overview
 The AOSOM Streaming project provides a packaged solution to collect and visualize telemetry streaming information coming from an AOS Server.<br>
@@ -39,13 +39,12 @@ The grafana web UI includes two main sections (top left) - Apstra AOS Blueprint,
 
 
 In the screenshot above, we can observe traffic in the demo AOS environment, and aggregate CPU, traffic, and errors.
-
-Change the dashboard at the to ‘Apstra AOS Device’ to filter telemetry
-events based on specific and individual devices. 
+Change the dashboard at the to ‘Apstra AOS Device’ to filter telemetryevents based on specific and individual devices. 
 
 ![Grafana](images/grafana_devices.png)
 
-
+New ‘Apstra AOS Device Interfaces’ allow to look on each interface traffic:
+![Grafana](images/grafana_interfaces.png)
 
 ## Prometheus Web UI
 
