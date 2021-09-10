@@ -139,47 +139,8 @@ Set up the project with ``make start``, or if making configuration changes, run 
     -- Start all components --
     Creating network "aosomstreaming_default" with the default driver
     Creating volume "aosomstreaming_grafana_data_2" with default driver
-    Pulling telegraf-influx (apstra/telegraf:1.2)...
-    1.2: Pulling from apstra/telegraf
-    00d19003217b: Pull complete
-    72dd23d7de04: Pull complete
-    cf6581f43cce: Pull complete
-    Digest: sha256:1539d4b84618abb44bdffb1e0a27399a7272814be36535f4a7dfa04661d6e5f6
-    Status: Downloaded newer image for apstra/telegraf:1.2
-    Pulling prometheus (prom/prometheus:v1.5.2)...
-    v1.5.2: Pulling from prom/prometheus
-    557a0c95bfcd: Pull complete
-    a3ed95caeb02: Pull complete
-    caf4d0cf9832: Pull complete
-    ee054001e2db: Pull complete
-    b95bf6c4c81b: Pull complete
-    86503a6ba368: Pull complete
-    ff27c7b0b50e: Pull complete
-    534e30a17a42: Pull complete
-    475d41733562: Pull complete
-    Digest: sha256:e049c086e35c0426389cd2450ef193f6c18b3d0065b97e5f203fdb254716fa1c
-    Status: Downloaded newer image for prom/prometheus:v1.5.2
-    Pulling influxdb (influxdb:1.1.1-alpine)...
-    1.1.1-alpine: Pulling from library/influxdb
-    0a8490d0dfd3: Pull complete
-    5f0fd352f87d: Pull complete
-    873718bcf8aa: Pull complete
-    3fbaf3e4140e: Pull complete
-    Digest: sha256:e0184202151b2abb9ceee79e6523d9492fc3c632324eb6f7bf1a672dd130a3bb
-    Status: Downloaded newer image for influxdb:1.1.1-alpine
-    Pulling grafana (grafana/grafana:4.1.2)...
-    4.1.2: Pulling from grafana/grafana
-    43c265008fae: Pull complete
-    c2ab838d4052: Pull complete
-    e8a816c8f505: Pull complete
-    Digest: sha256:05d925bd64cd3f9d6f56a4353774ccec588586579ab738f933cd002b7f96aca3
-    Status: Downloaded newer image for grafana/grafana:4.1.2
-    Creating aosomstreaming_telegraf-influx_1
-    Creating aosomstreaming_prometheus_1
-    Creating aosomstreaming_telegraf-prom_1
-    Creating aosomstreaming_influxdb_1
-    Creating aosomstreaming_grafana_1
-
+    [...]
+    aosom@ubuntu:~/aosom-streaming$ make init
 
 # Makefile options
 
