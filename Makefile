@@ -36,20 +36,23 @@ init: grafana-create-source-proxy grafana-load-dashboards
 grafana-create-source-proxy:
 	@echo "-- Create Datasource in Grafana 1/2"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"influxdb","type":"influxdb","url":"http://influxdb:8086","access":"proxy","isDefault":false,"database":"${INFLUXDB_BUCKET}","user":"$(INFLUXDB_USERNAME)","password":"$(INFLUXDB_PASSWORD)", "jsonData":{"defaultBucket":"${INFLUXDB_BUCKET}","httpMode":"POST","organization":"${INFLUXDB_ORG}","version":"Flux"},"secureJsonData":{"token": "${INFLUXDB_ADMIN_TOKEN}"},"version":2}'
-	@echo "\n-- Create Datasource in Grafana 2/2"
+	@echo ""
+	@echo "-- Create Datasource in Grafana 2/2"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"prometheus","type":"prometheus","url":"http://prometheus:9090","access":"proxy","isDefault":true}'
-	@echo "\n"
+	@echo ""
 
 ## Create datasource in direct mode in Grafana (use that is grafana cannot access the data)
 grafana-create-source-direct:
 	@echo "-- Cleanup Datasources in Grafana"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources/1' -X DELETE -H 'Content-Type: application/json' -H 'Accept: application/json'
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources/2' -X DELETE -H 'Content-Type: application/json' -H 'Accept: application/json'
-	@echo "\n-- Create Datasource in Grafana 1/2 [influxdb]"
+	@echo ""
+	@echo "-- Create Datasource in Grafana 1/2 [influxdb]"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"influxdb","type":"influxdb","url":"http://$(LOCAL_IP):8086","access":"direct","isDefault":false,"database":"aos","user":"$(INFLUXDB_USERNAME)","password":"$(INFLUXDB_PASSWORD)", "jsonData":{"defaultBucket":"${INFLUXDB_BUCKET}","httpMode":"POST","organization":"${INFLUXDB_ORG}","version":"Flux"},"secureJsonData":{"token": "${INFLUXDB_ADMIN_TOKEN}"},"version":2}'
-	@echo "\n-- Create Datasource in Grafana 2/2 [prometheus]"
+	@echo ""
+	@echo "-- Create Datasource in Grafana 2/2 [prometheus]"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"prometheus","type":"prometheus","url":"http://$(LOCAL_IP):9090","access":"direct","isDefault":true}'
-	@echo "\n"
+	@echo ""
 
 ## Load/Reload the Dashboards in Grafana
 grafana-load-dashboards:
