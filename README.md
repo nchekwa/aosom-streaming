@@ -1,7 +1,6 @@
 
 # AOSOM-Streaming
-Apstra OS Outbound Monitoring - Streaming<br>
-Version v0.8<br>
+Version v0.8 [2021-09-10]<br>
 <br>
 ![Overview](images/AOSOM.png)
 
