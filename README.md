@@ -2,6 +2,7 @@
 # AOSOM-Streaming
 Version v0.8 [2021-09-10]<br>
 <br>
+Tested with: [apstra/telegraf:latest | grafana/grafana:8.1.3 | prom/prometheus:2.29.2 | influxdb:2.0.8]<br>
 ![Overview](images/AOSOM.png)
 
 ## Disclaimer
