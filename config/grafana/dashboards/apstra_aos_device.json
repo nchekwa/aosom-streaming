@@ -1433,6 +1433,7 @@
     }, 
     "timezone": "browser", 
     "schemaVersion": 12, 
+    "uid": "ApstraDevices",
     "id": null
   }, 
   "overwrite": true

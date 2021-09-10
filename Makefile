@@ -38,6 +38,7 @@ grafana-create-source-proxy:
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"influxdb","type":"influxdb","url":"http://influxdb:8086","access":"proxy","isDefault":false,"database":"${INFLUXDB_BUCKET}","user":"$(INFLUXDB_USERNAME)","password":"$(INFLUXDB_PASSWORD)", "jsonData":{"defaultBucket":"${INFLUXDB_BUCKET}","httpMode":"POST","organization":"${INFLUXDB_ORG}","version":"Flux"},"secureJsonData":{"token": "${INFLUXDB_ADMIN_TOKEN}"},"version":2}'
 	@echo "\n-- Create Datasource in Grafana 2/2"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"prometheus","type":"prometheus","url":"http://prometheus:9090","access":"proxy","isDefault":true}'
+	@echo "\n"
 
 ## Create datasource in direct mode in Grafana (use that is grafana cannot access the data)
 grafana-create-source-direct:
@@ -48,15 +49,19 @@ grafana-create-source-direct:
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"influxdb","type":"influxdb","url":"http://$(LOCAL_IP):8086","access":"direct","isDefault":false,"database":"aos","user":"$(INFLUXDB_USERNAME)","password":"$(INFLUXDB_PASSWORD)", "jsonData":{"defaultBucket":"${INFLUXDB_BUCKET}","httpMode":"POST","organization":"${INFLUXDB_ORG}","version":"Flux"},"secureJsonData":{"token": "${INFLUXDB_ADMIN_TOKEN}"},"version":2}'
 	@echo "\n-- Create Datasource in Grafana 2/2 [prometheus]"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"prometheus","type":"prometheus","url":"http://$(LOCAL_IP):9090","access":"direct","isDefault":true}'
+	@echo "\n"
 
 ## Load/Reload the Dashboards in Grafana
 grafana-load-dashboards:
 	@echo "-- Load Dashboard in Grafana 1/3"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/dashboards/db' -X POST -H "Content-Type: application/json" --data-binary @config/grafana/dashboards/apstra_aos_blueprint.json
-	@echo "\n-- Load Dashboard in Grafana 2/3"
+	@echo ""
+	@echo "-- Load Dashboard in Grafana 2/3"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/dashboards/db' -X POST -H "Content-Type: application/json" --data-binary @config/grafana/dashboards/apstra_aos_device.json
-	@echo "\n-- Load Dashboard in Grafana 3/3"
+	@echo ""
+	@echo "-- Load Dashboard in Grafana 3/3"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/dashboards/db' -X POST -H "Content-Type: application/json" --data-binary @config/grafana/dashboards/apstra_aos_interface.json
+	@echo ""
 
 ## Stop all components, Update all images, Restart all components, Reload the Dashboards (stop update-docker start grafana-load-dashboards)
 update: stop update-docker start grafana-load-dashboards
@@ -70,7 +75,7 @@ update-docker:
 clean: clean-docker clean-aos
 
 ## Delete Docker Volume information (grafana_data, prometheus_data, influxdb2_data/_config)
-clean-docker-volume:
+clean-docker:
 	@echo "-- Delete all Volume Data"
 	@echo "-- Grafana (Grafana must be stopped) --"
 	docker volume rm -f aosom-streaming_grafana_data
@@ -80,9 +85,10 @@ clean-docker-volume:
 	docker volume rm -f aosom-streaming_influxdb2_data
 	docker volume rm -f aosom-streaming_influxdb2_config
 
-## Delete Apstra streaming receivers 
+
 AOS_TOKEN := $(shell  curl --silent -k -X POST "https://${AOS_SERVER}/api/user/login" -H  "accept: application/json" -H  "content-type: application/json, Cache-Control:no-cache" -d "{ \"username\":\"${AOS_LOGIN}\", \"password\":\"${AOS_PASSWORD}\" }" | jq --raw-output '.token') 
 AOS_STREAM_RECEIVER = $(shell  curl --silent -k -X GET "https://${AOS_SERVER}/api/streaming-config"   -H  "accept: application/json"   -H "AuthToken: ${AOS_TOKEN}"  | jq -r -c '.items[] | select(.hostname == "${LOCAL_IP}") | .id' |  tr '\n', " ") 
+## Delete Apstra streaming receivers 
 clean-aos:
 	@yum install -y -q -e 0 epel-release > /dev/null 2>&1
 	@yum install -y -q -e 0 jq > /dev/null 2>&1
