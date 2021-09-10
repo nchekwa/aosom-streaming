@@ -82,7 +82,7 @@
             "intervalFactor": 2,
             "legendFormat": "{{ interface }} - TX",
             "metric": "",
-            "refId": "A",
+            "refId": "TX",
             "step": 2
           }
         ],
@@ -146,7 +146,7 @@
             "expr": "avg(8*interface_counters_rx_bytes{device=~\"$device\"}/5) by (device, interface)",
             "interval": "",
             "intervalFactor": 2,
-            "legendFormat": "{{ interface }} - TX",
+            "legendFormat": "{{ interface }} - RX",
             "metric": "",
             "refId": "RX",
             "step": 2
@@ -227,7 +227,7 @@
             "intervalFactor": 2,
             "legendFormat": "{{ interface }} - TX",
             "metric": "",
-            "refId": "A",
+            "refId": "TX",
             "step": 2
           },
           {
@@ -235,7 +235,7 @@
             "intervalFactor": 2,
             "legendFormat": "{{ interface }} - RX",
             "metric": "",
-            "refId": "B",
+            "refId": "RX",
             "step": 2
           }
         ],
@@ -367,7 +367,7 @@
             "intervalFactor": 2,
             "legendFormat": "{{ interface }} - TX",
             "metric": "",
-            "refId": "A",
+            "refId": "TX",
             "step": 2
           },
           {
@@ -375,7 +375,7 @@
             "intervalFactor": 2,
             "legendFormat": "{{ interface }} - RX",
             "metric": "",
-            "refId": "B",
+            "refId": "RX",
             "step": 2
           }
         ],
