@@ -1,4 +1,28 @@
 {
+  "meta": {
+    "isStarred": true,
+    "type": "db",
+    "canSave": true,
+    "canEdit": true,
+    "canAdmin": true,
+    "canStar": true,
+    "slug": "apstra-aos-device-interfaces",
+    "url": "/d/ApstraInterfaces/apstra-aos-device-interfaces",
+    "expires": "0001-01-01T00:00:00Z",
+    "created": "2021-09-16T19:32:25+02:00",
+    "updated": "2021-09-16T19:46:18+02:00",
+    "updatedBy": "admin",
+    "createdBy": "admin",
+    "version": 9,
+    "hasAcl": false,
+    "isFolder": false,
+    "folderId": 0,
+    "folderUid": "",
+    "folderTitle": "General",
+    "folderUrl": "",
+    "provisioned": false,
+    "provisionedExternalId": ""
+  },
   "dashboard": {
     "annotations": {
       "list": [
@@ -23,7 +47,7 @@
     "gnetId": null,
     "graphTooltip": 0,
     "id": null,
-    "iteration": 1631199183152,
+    "iteration": 1631813585965,
     "links": [],
     "panels": [
       {
@@ -46,7 +70,8 @@
                   "value": 100
                 }
               ]
-            }
+            },
+            "unit": "bps"
           },
           "overrides": []
         },
@@ -73,7 +98,7 @@
           "text": {},
           "textMode": "auto"
         },
-        "pluginVersion": "8.1.2",
+        "pluginVersion": "8.1.3",
         "targets": [
           {
             "exemplar": true,
@@ -112,7 +137,8 @@
                   "value": 100
                 }
               ]
-            }
+            },
+            "unit": "bps"
           },
           "overrides": []
         },
@@ -139,7 +165,7 @@
           "text": {},
           "textMode": "auto"
         },
-        "pluginVersion": "8.1.2",
+        "pluginVersion": "8.1.3",
         "targets": [
           {
             "exemplar": true,
@@ -206,12 +232,13 @@
           "alertThreshold": true
         },
         "percentage": false,
-        "pluginVersion": "8.1.2",
+        "pluginVersion": "8.1.3",
         "pointradius": 5,
         "points": false,
         "renderer": "flot",
         "seriesOverrides": [
           {
+            "$$hashKey": "object:567",
             "alias": "/RX/",
             "transform": "negative-Y"
           }
@@ -259,6 +286,7 @@
         },
         "yaxes": [
           {
+            "$$hashKey": "object:574",
             "format": "pps",
             "label": "RX / TX",
             "logBase": 1,
@@ -267,6 +295,7 @@
             "show": true
           },
           {
+            "$$hashKey": "object:575",
             "format": "short",
             "label": "",
             "logBase": 1,
@@ -281,84 +310,53 @@
         }
       },
       {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
         "datasource": "prometheus",
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "RX / TX",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 10,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "linear",
-              "lineStyle": {
-                "fill": "solid"
-              },
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "never",
-              "spanNulls": true,
-              "stacking": {
-                "group": "A",
-                "mode": "normal"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
+        "fill": 1,
+        "fillGradient": 0,
         "gridPos": {
           "h": 8,
           "w": 12,
           "x": 12,
           "y": 13
         },
+        "hiddenSeries": false,
         "id": 8,
-        "links": [],
-        "options": {
-          "legend": {
-            "calcs": [
-              "mean",
-              "lastNotNull",
-              "max",
-              "min"
-            ],
-            "displayMode": "hidden",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single"
-          }
+        "legend": {
+          "alignAsTable": false,
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": false,
+          "total": false,
+          "values": false
         },
-        "pluginVersion": "8.1.2",
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.1.3",
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "$$hashKey": "object:193",
+            "alias": "/RX/",
+            "transform": "negative-Y"
+          }
+        ],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
         "targets": [
           {
             "exemplar": true,
@@ -379,10 +377,48 @@
             "step": 2
           }
         ],
+        "thresholds": [],
         "timeFrom": null,
+        "timeRegions": [],
         "timeShift": null,
         "title": "Stack Traffic Statistics (bps)",
-        "type": "timeseries"
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "$$hashKey": "object:206",
+            "format": "bps",
+            "label": "RX / TX",
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "$$hashKey": "object:207",
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
       },
       {
         "collapsed": false,
@@ -400,79 +436,50 @@
         "type": "row"
       },
       {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
         "datasource": null,
         "description": "",
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "RX / TX",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 6,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "smooth",
-              "lineStyle": {
-                "fill": "solid"
-              },
-              "lineWidth": 1,
-              "pointSize": 6,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
+        "fill": 1,
+        "fillGradient": 0,
         "gridPos": {
           "h": 8,
           "w": 16,
           "x": 0,
           "y": 22
         },
+        "hiddenSeries": false,
         "id": 22,
-        "options": {
-          "legend": {
-            "calcs": [
-              "last",
-              "min",
-              "max",
-              "mean"
-            ],
-            "displayMode": "table",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "multi"
-          }
+        "legend": {
+          "alignAsTable": true,
+          "avg": true,
+          "current": true,
+          "hideEmpty": false,
+          "hideZero": false,
+          "max": true,
+          "min": true,
+          "rightSide": false,
+          "show": true,
+          "total": true,
+          "values": true
         },
+        "lines": true,
+        "linewidth": 1,
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.1.3",
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
         "targets": [
           {
             "exemplar": true,
@@ -494,8 +501,48 @@
             "refId": "RX"
           }
         ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
         "title": " $interface Traffic Statistics (bps)",
-        "type": "timeseries"
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "$$hashKey": "object:366",
+            "format": "bps",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "$$hashKey": "object:367",
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
       }
     ],
     "refresh": false,
@@ -605,7 +652,6 @@
     "timezone": "browser",
     "title": "Apstra AOS Device Interfaces",
     "uid": "ApstraInterfaces",
-    "version": 0
-  }, 
-  "overwrite": true
+    "version": 9
+  }
 }

@@ -115,7 +115,7 @@ services:
 # Telegraf - Syslog
 # -------------------------------------------------------------------------
   telegraf-syslog:
-    image: apstra/telegraf:latest
+    image: telegraf:latest
     command: telegraf -debug
     restart: unless-stopped
     env_file:
