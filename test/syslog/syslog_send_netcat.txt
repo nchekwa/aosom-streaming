@@ -1,4 +1,4 @@
-The Syslog input plugin listens for syslog messages transmitted over UDP or TCP. Syslog messages should be formatted according to RFC 5424.
+The Syslog input plugin listens for syslog messages transmitted over UDP or TCP. Syslog messages should be formatted according to RFC5424.
 https://datatracker.ietf.org/doc/html/rfc5424
 
 ## TCP
