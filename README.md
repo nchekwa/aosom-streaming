@@ -1,8 +1,8 @@
 
 # AOSOM-Streaming
-Version v0.8 [2021-09-10]<br>
+Version v0.8.1 [2021-09-17]<br>
 <br>
-Tested with: [apstra/telegraf:latest | grafana/grafana:8.1.3 | prom/prometheus:2.29.2 | influxdb:2.0.8]<br>
+Tested with: [apstra/telegraf:latest | grafana/grafana:8.1.4 | prom/prometheus:2.29.2 | influxdb:1.8.9 | Chronograf 1.9.0]<br>
 ![Overview](images/AOSOM.png)
 
 ## Disclaimer
@@ -17,8 +17,10 @@ The packaged solution includes: <br>
 
 * Grafana (port 3000) - a graphical Interface based on  
 * Prometheus (port 9090) - for Counters and Alerts 
-* Influxdb2 - for Events (port 8086)
+* Influxdb - for Events
+* Chronograf - WebUI for InfluxDB (port 8086)
 * 3 Telegraf Collectors [Syslog/Prometheus/Influxdb]
+* Rsyslog (port 514) - convert RFC3164 -> RFC5424
 
 The application must first be configured by modifying
 ``.env``, then ``make clean``, ``make start``, ``make init``

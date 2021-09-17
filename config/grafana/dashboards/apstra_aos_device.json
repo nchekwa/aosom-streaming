@@ -1,6 +1,5 @@
 {
   "meta": {
-    "isStarred": true,
     "type": "db",
     "canSave": true,
     "canEdit": true,
@@ -9,11 +8,11 @@
     "slug": "apstra-aos-device",
     "url": "/d/ApstraDevices/apstra-aos-device",
     "expires": "0001-01-01T00:00:00Z",
-    "created": "2021-09-16T19:32:25+02:00",
-    "updated": "2021-09-16T22:48:46+02:00",
+    "created": "2021-09-17T07:07:17+02:00",
+    "updated": "2021-09-17T07:07:17+02:00",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 8,
+    "version": 1,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -73,6 +72,7 @@
             }
           },
           "name": "Link",
+          "query": "SELECT * FROM event_link_status WHERE state = 'LINK_DOWN' AND blueprint =~ /$blueprint/ AND role =~ /$role/ AND $timeFilter",
           "showLine": "True",
           "tagsColumn": "device, ifname",
           "target": {
@@ -99,7 +99,7 @@
     "gnetId": null,
     "graphTooltip": 0,
     "id": null,
-    "iteration": 1631824996254,
+    "iteration": 1631839496520,
     "links": [],
     "panels": [
       {
@@ -1730,6 +1730,6 @@
     "timezone": "browser",
     "title": "Apstra AOS Device",
     "uid": "ApstraDevices",
-    "version": 8
+    "version": 1
   }
 }

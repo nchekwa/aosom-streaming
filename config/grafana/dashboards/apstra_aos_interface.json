@@ -1,6 +1,5 @@
 {
   "meta": {
-    "isStarred": true,
     "type": "db",
     "canSave": true,
     "canEdit": true,
@@ -9,11 +8,11 @@
     "slug": "apstra-aos-device-interfaces",
     "url": "/d/ApstraInterfaces/apstra-aos-device-interfaces",
     "expires": "0001-01-01T00:00:00Z",
-    "created": "2021-09-16T19:32:25+02:00",
-    "updated": "2021-09-16T19:46:18+02:00",
+    "created": "2021-09-17T07:07:17+02:00",
+    "updated": "2021-09-17T07:12:31+02:00",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 9,
+    "version": 5,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -47,7 +46,7 @@
     "gnetId": null,
     "graphTooltip": 0,
     "id": null,
-    "iteration": 1631813585965,
+    "iteration": 1631855317334,
     "links": [],
     "panels": [
       {
@@ -445,8 +444,8 @@
         "fill": 1,
         "fillGradient": 0,
         "gridPos": {
-          "h": 8,
-          "w": 16,
+          "h": 11,
+          "w": 17,
           "x": 0,
           "y": 22
         },
@@ -487,7 +486,7 @@
             "format": "time_series",
             "interval": "",
             "intervalFactor": 2,
-            "legendFormat": "{{ interface }} - TX",
+            "legendFormat": "{{device}} - {{ interface }} - TX",
             "refId": "TX"
           },
           {
@@ -497,7 +496,7 @@
             "hide": false,
             "interval": "",
             "intervalFactor": 2,
-            "legendFormat": "{{ interface }} - RX",
+            "legendFormat": "{{device}} - {{ interface }} - RX",
             "refId": "RX"
           }
         ],
@@ -505,7 +504,7 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": " $interface Traffic Statistics (bps)",
+        "title": "$device - $interface - Traffic Statistics (bps)",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -526,7 +525,7 @@
             "label": null,
             "logBase": 1,
             "max": null,
-            "min": null,
+            "min": "0",
             "show": true
           },
           {
@@ -652,6 +651,6 @@
     "timezone": "browser",
     "title": "Apstra AOS Device Interfaces",
     "uid": "ApstraInterfaces",
-    "version": 9
+    "version": 5
   }
 }

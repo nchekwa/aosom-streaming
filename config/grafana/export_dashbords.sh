@@ -22,3 +22,9 @@ for dash in $(curl -s "$FULLURL/api/search?query=&" | jq -r '.[] | select(.type 
         rm dashboards_export/${dash}.json
         mv dashboards_export/${dash}-idfix.json dashboards_export/${dash}-${slug}.json
 done
+
+
+mv dashboards_export/ApstraBlueprints-apstra-aos-blueprint.json dashboards_export/apstra_aos_blueprint.json
+mv dashboards_export/ApstraDevices-apstra-aos-device.json dashboards_export/apstra_aos_device.json
+mv dashboards_export/ApstraInterfaces-apstra-aos-device-interfaces.json dashboards_export/apstra_aos_interface.json
+mv dashboards_export/Syslog-syslog.json dashboards_export/syslog_syslog.json
