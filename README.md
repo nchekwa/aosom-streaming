@@ -48,6 +48,13 @@ Change the dashboard at the to ‘Apstra AOS Device’ to filter telemetryevents
 New ‘Apstra AOS Device Interfaces’ allow to look on each interface traffic:
 ![Grafana](images/grafana_interfaces.png)
 
+Syslog:
+![Grafana](images/grafana_syslog.png)
+
+
+Syslog via Loki:
+![Grafana](images/grafana_syslog_loki.png)
+
 ## Prometheus Web UI
 
 Prometheus is used for alerts and device telemetry counter storage in the
