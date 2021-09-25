@@ -73,14 +73,29 @@ Here is an example of BGP Neighbors being offline.<br>
 ![Prometheus](images/prometheus_bgp_down.png)
 <br>
 
-## InfluxDB v2
+## InfluxDB + Chronograf
 
 InfluxDB is used to store AOS events from telemetry streaming.  InfluxDB is
-available by viewing http://<aosom-streaming>:8086<br>
+available by viewing chronograf GUI http://<aosom-streaming>:8888<br>
 
 <br>
-![InfluxDB](images/influx_default.png)
+![InfluxDB](images/influxdb_chronograf.png)
 
+## Syslog
+
+Telegraf is able to process syslog event which are in RFC5424 format.<br>
+To parse Juniper Syslog - we need to use proxy of events RFC3164 (syslog-ng -or- rsyslog).<br>
+Becouse Docker by default use SNAT for incoming packets insid docker0 network. To prevent lose visibility of source address of device - we need to install syslog-ng/rsyslog in host mode and point staticly telegram IP to internal docker network.<br>
+<br>
+http://www.ietf.org/rfc/rfc5424.txt             The Syslog Protocol                             March 2009      Adiscon GmbH<br>
+http://www.ietf.org/rfc/rfc3164.txt             The BSD syslog Protocol                         August 2001     Cisco Systems<br>
+http://www.ietf.org/rfc/rfc3339.txt             Date and Time on the Internet: Timestamps       July 2002       Sun Microsystems<br>
+<br>
+Telegraf =  input UDP/TCP RFC5424 (IETF-syslog)<br>
+            from 1.20 will support also RFC3164 (BSD or legacy-syslog) - unfortunately - it still doesn't work properly in 1.20 version <br>
+<br>
+Syslog-NG = input UDP/TCP RFC3164 (with RFC3339)<br>
+<br>
 
 # Aosom-Streaming configuration
 
@@ -115,17 +130,10 @@ Edit `.env`:
     # Prometheus
     INPUT_PORT_PROM=6666
 
-    # InfluxDB2
-    INFLUXDB_USERNAME=admin
-    INFLUXDB_PASSWORD=adminadmin # minimum length is 8 characters!
-    INFLUXDB_ORG=Acme
-    INFLUXDB_BUCKET=aos
-    INFLUXDB_RETENTION=365d
-    INFLUXDB_ADMIN_TOKEN=myInfluxAdminToken
+    # InfluxDB
+    INFLUXDB_ADMIN_USER=admin
+    INFLUXDB_ADMIN_PASSWORD=adminadmin
     INPUT_PORT_INFLUX=4444
-
-    # Elastic Search
-    INPUT_PORT_ES=7777
 
 
 <b>Modify variables.env</b>
