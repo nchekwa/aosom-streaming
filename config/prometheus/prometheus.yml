@@ -20,3 +20,7 @@ scrape_configs:
   - job_name: 'aos-streaming'
     static_configs:
       - targets: ['telegraf-prom:9126']
+
+  - job_name: 'telegraf-snmp-juniper'
+    static_configs:
+      - targets: ['telegraf-snmp-juniper:9126']

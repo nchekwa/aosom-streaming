@@ -19,8 +19,20 @@ help:
 	} \
 	{ lastLine = $$0 }' $(MAKEFILE_LIST)
 
+## Install all components
+install:
+ifeq ($(shell test -e /usr/bin/jq && echo -n yes),yes)
+	@echo "-- OK - JQ installed --"
+else
+	@echo "-- Install yum packets --"
+	@yum install -y -q -e 0 epel-release > /dev/null 2>&1
+	@yum install -y -q -e 0 jq conntrack > /dev/null 2>&1
+endif
+
+
+
 ## Start all components
-start:
+start: install
 	@echo "-- Start all components --"
 	docker-compose up -d
 
@@ -38,11 +50,14 @@ grafana-create-source-proxy:
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources/1' -X DELETE -H 'Content-Type: application/json' -H 'Accept: application/json'
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources/2' -X DELETE -H 'Content-Type: application/json' -H 'Accept: application/json'
 	@echo ""
-	@echo "-- Create Datasource in Grafana 1/2 [InfluxDB]"
+	@echo "-- Create Datasource in Grafana 1/3 [InfluxDB]"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"id":"1", "name":"influxdb","type":"influxdb","url":"http://influxdb:8086","access":"proxy","isDefault":false,"database":"aos","method": "POST", "user":"$(INFLUXDB_ADMIN_USER)","jsonData":{"httpMode":"POST"}, "secureJsonData":{"password":"${INFLUXDB_ADMIN_PASSWORD}"}}'
 	@echo ""
-	@echo "-- Create Datasource in Grafana 2/2 [Prometheus]"
+	@echo "-- Create Datasource in Grafana 2/3 [Prometheus]"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"id":"2", "name":"prometheus","type":"prometheus","url":"http://prometheus:9090","access":"proxy","isDefault":true}'
+	@echo ""
+	@echo "-- Create Datasource in Grafana 3/3 [Loki]"
+	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"id":"3", "name":"loki","type":"loki","url":"http://loki:3100","access":"proxy","isDefault":false}'
 	@echo ""
 
 ## Create datasource in direct mode in Grafana (use that is grafana cannot access the data)
@@ -51,11 +66,14 @@ grafana-create-source-direct:
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources/1' -X DELETE -H 'Content-Type: application/json' -H 'Accept: application/json'
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources/2' -X DELETE -H 'Content-Type: application/json' -H 'Accept: application/json'
 	@echo ""
-	@echo "-- Create Datasource in Grafana 1/2 [InfluxDB]"
+	@echo "-- Create Datasource in Grafana 1/3 [InfluxDB]"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"influxdb","type":"influxdb","url":"http://$(LOCAL_IP):8086","access":"direct","isDefault":false,"database":"aos","user":"$(INFLUXDB_ADMIN_USER)","password":"$(INFLUXDB_ADMIN_PASSWORD)"}'
 	@echo ""
-	@echo "-- Create Datasource in Grafana 2/2 [Prometheus]"
+	@echo "-- Create Datasource in Grafana 2/3 [Prometheus]"
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"prometheus","type":"prometheus","url":"http://$(LOCAL_IP):9090","access":"direct","isDefault":true}'
+	@echo ""
+	@echo "-- Create Datasource in Grafana 3/3 [Loki]"
+	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"loki","type":"loki","url":"http://$(LOCAL_IP):3100","access":"direct","isDefault":true}'
 	@echo ""
 
 ## Load/Reload the Dashboards in Grafana
@@ -73,9 +91,11 @@ grafana-load-dashboards:
 	@curl 'http://$(GRAFANA_LOGIN):$(GRAFANA_PASSWORD)@localhost:3000/api/dashboards/db' -X POST -H "Content-Type: application/json" --data-binary @config/grafana/dashboards/syslog_syslog.json
 	@echo ""
 
+sleep:
+	sleep 3
 
 ## Stop all components, Update all images, Restart all components, Reload the Dashboards (stop update-docker start grafana-load-dashboards)
-update: stop update-docker start grafana-load-dashboards
+update: stop update-docker start sleep grafana-load-dashboards
 
 ## Update Docker Images
 update-docker:
@@ -96,14 +116,15 @@ clean-docker:
 	docker volume rm -f aosom-streaming_influxdb_data
 	@echo "-- Chronograf (Chronograf must be stopped) --"
 	docker volume rm -f aosom-streaming_chronograf_data
+	@echo "-- Loki (Loki must be stopped) --"
+	docker volume rm -f aosom-streaming_loki_data
 
 AOS_TOKEN := $(shell  curl --silent -k -X POST "https://${AOS_SERVER}/api/user/login" -H  "accept: application/json" -H  "content-type: application/json, Cache-Control:no-cache" -d "{ \"username\":\"${AOS_LOGIN}\", \"password\":\"${AOS_PASSWORD}\" }" | jq --raw-output '.token') 
 AOS_STREAM_RECEIVER = $(shell  curl --silent -k -X GET "https://${AOS_SERVER}/api/streaming-config"   -H  "accept: application/json"   -H "AuthToken: ${AOS_TOKEN}"  | jq -r -c '.items[] | select(.hostname == "${LOCAL_IP}") | .id' |  tr '\n', " ") 
 ## Delete Apstra streaming receivers 
 clean-aos:
-	@yum install -y -q -e 0 epel-release > /dev/null 2>&1
-	@yum install -y -q -e 0 jq > /dev/null 2>&1
-	@echo "Delete all streaming receivers on the server (AOS server must be reacheable)"
+	@echo "-- Apstra AOS Clean --"
+	@echo "-- Delete Steam Receivers via API from ${AOS_SERVER} (AOS server must be reacheable) --"
 	for receiver_id in $(AOS_STREAM_RECEIVER); do \
         echo "-- Delete Apstra Steam Receiver ID: $$receiver_id "; \
 		curl -k -X DELETE "https://${AOS_SERVER}/api/streaming-config/$$receiver_id"   -H  "accept: application/json"   -H "AuthToken: ${AOS_TOKEN}"; \

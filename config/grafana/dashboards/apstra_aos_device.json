@@ -8,11 +8,11 @@
     "slug": "apstra-aos-device",
     "url": "/d/ApstraDevices/apstra-aos-device",
     "expires": "0001-01-01T00:00:00Z",
-    "created": "2021-09-17T07:07:17+02:00",
-    "updated": "2021-09-17T07:07:17+02:00",
+    "created": "2021-09-20T14:43:07+02:00",
+    "updated": "2021-09-20T14:45:16+02:00",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 1,
+    "version": 2,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -1730,6 +1730,6 @@
     "timezone": "browser",
     "title": "Apstra AOS Device",
     "uid": "ApstraDevices",
-    "version": 1
+    "version": 2
   }
 }

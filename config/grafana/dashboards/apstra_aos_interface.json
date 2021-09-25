@@ -8,11 +8,11 @@
     "slug": "apstra-aos-device-interfaces",
     "url": "/d/ApstraInterfaces/apstra-aos-device-interfaces",
     "expires": "0001-01-01T00:00:00Z",
-    "created": "2021-09-17T07:07:17+02:00",
-    "updated": "2021-09-17T07:12:31+02:00",
+    "created": "2021-09-20T14:43:07+02:00",
+    "updated": "2021-09-25T20:01:20+02:00",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 5,
+    "version": 4,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -46,7 +46,7 @@
     "gnetId": null,
     "graphTooltip": 0,
     "id": null,
-    "iteration": 1631855317334,
+    "iteration": 1632592826547,
     "links": [],
     "panels": [
       {
@@ -97,7 +97,7 @@
           "text": {},
           "textMode": "auto"
         },
-        "pluginVersion": "8.1.3",
+        "pluginVersion": "8.1.5",
         "targets": [
           {
             "exemplar": true,
@@ -164,7 +164,7 @@
           "text": {},
           "textMode": "auto"
         },
-        "pluginVersion": "8.1.3",
+        "pluginVersion": "8.1.5",
         "targets": [
           {
             "exemplar": true,
@@ -231,7 +231,7 @@
           "alertThreshold": true
         },
         "percentage": false,
-        "pluginVersion": "8.1.3",
+        "pluginVersion": "8.1.5",
         "pointradius": 5,
         "points": false,
         "renderer": "flot",
@@ -342,7 +342,7 @@
           "alertThreshold": true
         },
         "percentage": false,
-        "pluginVersion": "8.1.3",
+        "pluginVersion": "8.1.5",
         "pointradius": 2,
         "points": false,
         "renderer": "flot",
@@ -471,7 +471,7 @@
           "alertThreshold": true
         },
         "percentage": false,
-        "pluginVersion": "8.1.3",
+        "pluginVersion": "8.1.5",
         "pointradius": 2,
         "points": false,
         "renderer": "flot",
@@ -651,6 +651,6 @@
     "timezone": "browser",
     "title": "Apstra AOS Device Interfaces",
     "uid": "ApstraInterfaces",
-    "version": 5
+    "version": 4
   }
 }

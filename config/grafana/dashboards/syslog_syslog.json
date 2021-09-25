@@ -8,11 +8,11 @@
     "slug": "syslog",
     "url": "/d/Syslog/syslog",
     "expires": "0001-01-01T00:00:00Z",
-    "created": "2021-09-17T07:07:17+02:00",
-    "updated": "2021-09-17T07:07:17+02:00",
+    "created": "2021-09-20T14:43:07+02:00",
+    "updated": "2021-09-21T21:37:54+02:00",
     "updatedBy": "admin",
     "createdBy": "admin",
-    "version": 1,
+    "version": 3,
     "hasAcl": false,
     "isFolder": false,
     "folderId": 0,
@@ -47,7 +47,7 @@
     "gnetId": 12433,
     "graphTooltip": 0,
     "id": null,
-    "iteration": 1631852880651,
+    "iteration": 1632253051281,
     "links": [],
     "panels": [
       {
@@ -89,7 +89,7 @@
           "alertThreshold": true
         },
         "percentage": false,
-        "pluginVersion": "8.1.3",
+        "pluginVersion": "8.1.4",
         "pointradius": 2,
         "points": false,
         "renderer": "flot",
@@ -800,7 +800,7 @@
               "properties": [
                 {
                   "id": "custom.width",
-                  "value": null
+                  "value": 154
                 }
               ]
             },
@@ -834,7 +834,7 @@
             }
           ]
         },
-        "pluginVersion": "8.1.3",
+        "pluginVersion": "8.1.4",
         "targets": [
           {
             "groupBy": [
@@ -1051,6 +1051,6 @@
     "timezone": "",
     "title": "Syslog",
     "uid": "Syslog",
-    "version": 1
+    "version": 3
   }
 }

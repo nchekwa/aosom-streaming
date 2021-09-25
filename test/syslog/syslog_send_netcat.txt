@@ -1,23 +1,61 @@
-The Syslog input plugin listens for syslog messages transmitted over UDP or TCP. Syslog messages should be formatted according to RFC5424.
-https://datatracker.ietf.org/doc/html/rfc5424
+################################################################################################
+http://www.ietf.org/rfc/rfc5424.txt             The Syslog Protocol                             March 2009      Adiscon GmbH
+http://www.ietf.org/rfc/rfc3164.txt             The BSD syslog Protocol                         August 2001     Cisco Systems
+http://www.ietf.org/rfc/rfc3339.txt             Date and Time on the Internet: Timestamps       July 2002       Sun Microsystems
 
-## TCP
-echo "57 <13>1 2021-09-16T00:25:00.0Z txample.org root - - - tes3" | nc 127.0.0.1 6514
-170 <165>1 2018-10-01:14:15.000Z mymachine.example.com evntslog - ID47 [exampleSDID@32473 iut="3" eventSource="Application" eventID="1011"] An application event log entry...
+Telegraf =  input UDP/TCP RFC5424 (IETF-syslog)
+            from 1.20 will support also RFC3164 (BSD or legacy-syslog) - unfortunately - it still doesn't work properly in 1.20 version 
 
+Syslog-NG = input UDP/TCP RFC3164 (with RFC3339)
+
+################################################################################################
 ## UDP
-echo "<13>1 2021-09-17T00:01:00.0Z uxample2.org root - - - test01" | nc -u 127.0.0.1 6514
-echo "<13>1 2021-09-17T00:02:00.0Z uxample2.org root - - - test02" | nc -u 127.0.0.1 6514
-echo "<13>1 2021-09-17T00:03:00.0Z uxample2.org root - - - test03" | nc -u 127.0.0.1 6514
+# RFC 3164
+echo "<34>Oct 11 22:14:15 mymachine su: 'su root' failed for lonvick on /dev/pts/8" | nc -w 0 -u 127.0.0.1 514
+echo "<187>37972: Nov 21 16:53:33.429: %LINK-3-UPDOWN: Interface GigabitEthernet0/8, changed state to down" | nc -w 0 -u 127.0.0.1 514
+echo "<10>Aug 27 06:59:53 SRX3600A SRX3600A: intranet-lsys: rpd[4307]: task_connect: task BGP_65100_65200.172.16.1.1+179 addr 172.16.10.1+179: Can't assign requested address" | nc -w 0 -u 127.0.0.1 514
+
+# RFC 3339
+echo '<23>1 2013-08-27T07:08:01.366 SRX3600A RT_FLOW - RT_FLOW_SESSION_CREATE_LS [junos@2636.1.1.1.2.26 logical-system-name="test-lsys" source-address="10.10.10.100" source-port="4206" destination-address="10.20.20.15" destination-port="445" service-name="junos-smb" nat-source-address="10.10.10.100" nat-source-port="4206" nat-destination-address="10.20.20.15" nat-destination-port="445" src-nat-rule-name="None" dst-nat-rule-name="None" protocol-id="6" policy-name="123" source-zone-name="TEST1" destination-zone-name="TEST2" session-id-32="14285714" username="N/A" roles="N/A" packet-incoming-interface="reth1.100"]' | nc -w 0 -u 127.0.0.1 514
+
+# RFC5424 - https://datatracker.ietf.org/doc/html/rfc5424#section-6
+echo '<165>1 2003-10-11T22:14:15.003Z mymachine.example.com evntslog - ID47 [exampleSDID@32473 iut="3" eventSource="Application" eventID="1011"] BOMAn application event log entry' | nc -w 0 -u 127.0.0.1 514
+echo "<13>1 2021-09-17T00:01:00.0Z uxample2.org root - - - test01 RFC 3164" | nc -w 0 -u 127.0.0.1 514
+echo "<13>1 2021-09-17T00:02:00.0Z uxample2.org root - - - test02" | nc -u 127.0.0.1 514
+echo "<13>1 2021-09-17T00:03:00.0Z uxample2.org root - - - test03" | nc -u 127.0.0.1 514
 echo "<13>1 2021-09-17T00:04:00.0Z uxample2.org root - - - test04" | nc -u 127.0.0.1 6514
 echo "<13>1 2021-09-17T00:05:00.0Z uxample2.org root - - - test05" | nc -u 127.0.0.1 6514
 echo "<22>1 2021-09-17T00:06:21Z sendername programname - - - the log message" | nc -u 127.0.0.1 6514
 
-syslog,appname=evntslog,facility=local4,hostname=mymachine.example.com,severity=notice exampleSDID@32473_eventID="1011",exampleSDID@32473_eventSource="Application",exampleSDID@32473_iut="3",facility_code=20i,message="An application event log entry...",msgid="ID47",severity_code=5i,timestamp=1065910455003000000i,version=1i 1538421339749472344
+################################################################################################
+## TCP
+echo "57 <13>1 2021-09-16T00:25:00.0Z txample.org root - - - tes3" | nc 127.0.0.1 6514
 
 
-*** Update ***
-https://github.com/influxdata/telegraf/pull/8454
-from version 1.20 telegraf will support RFC3164 
 
-echo "<187>37972: Nov 21 16:53:33.429: %LINK-3-UPDOWN: Interface GigabitEthernet0/8, changed state to down" | nc -u 127.0.0.1 514
+
+################################################################################################
+## Juniper QFX Syslog
+set system syslog host 10.10.10.2 any any
+set system syslog host 10.10.10.2 port 6514
+set system syslog host 10.10.10.2 transport udp
+
+
+system {
+    syslog {
+        host 10.10.10.2 {
+            any any;
+            port 6514;
+            transport udp;
+        }
+    }
+}
+
+
+user@Junos> start shell %
+logger -e UI_COMMIT
+logger -e UI_COMMIT –p external.info
+logger -e UI_COMMIT –d mgd
+logger -e UI_COMMIT -a username=user -a command=commit
+logger -e UI_COMMIT -d mgd "This is a fake commit."
+logger -e LICENSE_VIOLATION -p external.info "This is a test of the emergency broadcast system"
