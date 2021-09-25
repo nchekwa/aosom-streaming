@@ -21,15 +21,9 @@ help:
 
 ## Install all components
 install:
-ifeq ($(shell test -e /usr/bin/jq && echo -n yes),yes)
-	@echo "-- OK - JQ installed --"
-else
-	@echo "-- Install yum packets --"
-	@yum install -y -q -e 0 epel-release > /dev/null 2>&1
-	@yum install -y -q -e 0 jq conntrack > /dev/null 2>&1
-endif
-
-
+REQUIRED_BINS := jq
+$(foreach bin,$(REQUIRED_BINS),\
+    $(if $(shell command -v $(bin) 2> /dev/null),,$(error Please install `$(bin)`)))
 
 ## Start all components
 start: install

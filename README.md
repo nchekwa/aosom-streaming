@@ -29,7 +29,7 @@ to customize the IP addresses to your environment.
 # Using Aosom-streaming
 
 ## Grafana Web UI
-You can browse to the Grafana web UI by visiting http://<aosom-streaming>:3000<br>
+You can browse to the Grafana web UI by visiting http://aosom-streaming:3000<br>
 The default username is `admin` password `adminadmin`<br>
 <br>
 
@@ -59,7 +59,7 @@ Syslog via Loki:
 
 Prometheus is used for alerts and device telemetry counter storage in the
 Aosom-streaming appliance.  Prometheus is available by browsing
-to http://<aosom-streaming>:9090<br>
+to http://aosom-streaming:9090<br>
 
 Each of the queries are built dynamically by AOS when incoming events
 appear.  Begin typing under ‘execute’ to see example query names.  Starting
@@ -76,7 +76,7 @@ Here is an example of BGP Neighbors being offline.<br>
 ## InfluxDB + Chronograf
 
 InfluxDB is used to store AOS events from telemetry streaming.  InfluxDB is
-available by viewing chronograf GUI http://<aosom-streaming>:8888<br>
+available by viewing chronograf GUI http://aosom-streaming:8888<br>
 
 ![InfluxDB](images/influxdb_chronograf.png)
 
@@ -211,13 +211,11 @@ These are the simple steps to build your own Aosom-streaming VM - at the
 end of the day, Aosom-Streaming is only a simple Docker container, and this
 guide is only setting up a very basic docker server.
 
-## Install Ubuntu 16.04.2
 
-Download the Ubuntu 16.04.2 ISO and provision a new VM.<br>
+## Install Centos 7.9.2009
 
-The default username we’ve chosen is ‘aosom’ with password ‘admin’.<br>
-For larger blueprints, Apstra recommends changing RAM to at least 8GB
-and 2 vCPU to or more.<br>
+## Resource
+
 
     ========  ========
     Resource  Quantity
@@ -226,82 +224,6 @@ and 2 vCPU to or more.<br>
     CPU       2vCPU
     Network   1 vNIC
     ========  ========
-
-## Install required packages
-Based on Ubuntu 16.04.2
-
-Run apt-get update::
-
-    apt-get update
-
-Perform a system update to ensure all packages are up to date.::
-
-    aosom@ubuntu:~$ sudo apt-get install docker docker-compose git make curl
-        openssh-server
-    [sudo] password for aosom:
-    Reading package lists... Done
-    Building dependency tree
-    Reading state information... Done
-    The following additional packages will be installed:
-      bridge-utils cgroupfs-mount containerd dns-root-data dnsmasq-base docker.io
-      git-man liberror-perl libnetfilter-conntrack3 libperl5.22 libpython-stdlib
-      libpython2.7-minimal libpython2.7-stdlib libyaml-0-2 patch perl
-      perl-modules-5.22 python python-backports.ssl-match-hostname
-      python-cached-property python-cffi-backend python-chardet
-      python-cryptography python-docker python-dockerpty python-docopt
-      python-enum34 python-funcsigs python-functools32 python-idna
-      python-ipaddress python-jsonschema python-minimal python-mock
-      python-ndg-httpsclient python-openssl python-pbr python-pkg-resources
-      python-pyasn1 python-requests python-six python-texttable python-urllib3
-      python-websocket python-yaml python2.7 python2.7-minimal rename runc
-      ubuntu-fan xz-utils
-    Suggested packages:
-      mountall aufs-tools btrfs-tools debootstrap docker-doc rinse zfs-fuse
-      | zfsutils git-daemon-run | git-daemon-sysvinit git-doc git-el git-email
-      git-gui gitk gitweb git-arch git-cvs git-mediawiki git-svn diffutils-doc
-      perl-doc libterm-readline-gnu-perl | libterm-readline-perl-perl make
-      python-doc python-tk python-cryptography-doc python-cryptography-vectors
-      python-enum34-doc python-funcsigs-doc python-mock-doc python-openssl-doc
-      python-openssl-dbg python-setuptools doc-base python-ntlm python2.7-doc
-      binutils binfmt-support make
-    The following NEW packages will be installed:
-      bridge-utils cgroupfs-mount containerd dns-root-data dnsmasq-base docker
-      docker-compose docker.io git git-man liberror-perl libnetfilter-conntrack3
-      libperl5.22 libpython-stdlib libpython2.7-minimal libpython2.7-stdlib
-      libyaml-0-2 patch perl perl-modules-5.22 python
-      python-backports.ssl-match-hostname python-cached-property
-      python-cffi-backend python-chardet python-cryptography python-docker
-      python-dockerpty python-docopt python-enum34 python-funcsigs
-      python-functools32 python-idna python-ipaddress python-jsonschema
-      python-minimal python-mock python-ndg-httpsclient python-openssl python-pbr
-      python-pkg-resources python-pyasn1 python-requests python-six
-      python-texttable python-urllib3 python-websocket python-yaml python2.7
-      python2.7-minimal rename runc ubuntu-fan xz-utils make
-    0 upgraded, 54 newly installed, 0 to remove and 3 not upgraded.
-    Need to get 32.4 MB of archives.
-    After this operation, 174 MB of additional disk space will be used.
-    Do you want to continue? [Y/n] y
-
-
-Add the aosom user to the docker group.  This will allow ‘aosom’
-to make docker configuration changes without having to escalate to sudo.
-
-Add user to docker::
-
-    aosom@ubuntu:~/aosom-streaming$ sudo usermod -aG docker aosom
-    Log out and log back in again for ‘aosom’ user to be properly added to the group.
-
-Copy the Aosom-streaming docker containers over with ‘git clone’::
-
-    aosom@ubuntu:~$ git clone https://github.com/Apstra/aosom-streaming.git
-    Cloning into 'aosom-streaming'...
-    remote: Counting objects: 303, done.
-    remote: Total 303 (delta 0), reused 0 (delta 0), pack-reused 303
-    Receiving objects: 100% (303/303), 64.10 KiB | 0 bytes/s, done.
-    Resolving deltas: 100% (176/176), done.
-    Checking connectivity... done.
-    aosom@ubuntu:~$
-
 
 ## Change system hostname
 
