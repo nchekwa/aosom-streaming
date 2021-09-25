@@ -78,7 +78,6 @@ Here is an example of BGP Neighbors being offline.<br>
 InfluxDB is used to store AOS events from telemetry streaming.  InfluxDB is
 available by viewing chronograf GUI http://<aosom-streaming>:8888<br>
 
-<br>
 ![InfluxDB](images/influxdb_chronograf.png)
 
 ## Syslog
